@@ -1,0 +1,59 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <ClCompile Include="include\platform\windows\pch.c" />
+    <ClCompile Include="dfp\memx_dfp.c" />
+    <ClCompile Include="gbf\memx_gbf.c" />
+    <ClCompile Include="memx.c" />
+    <ClCompile Include="mpuio\memx_mpuio.c" />
+    <ClCompile Include="mpuio\memx_usb.c" />
+    <ClCompile Include="mpu\memx_mpu.c" />
+    <ClCompile Include="util\memx_list.c" />
+    <ClCompile Include="util\memx_ringbuffer.c" />
+    <ClCompile Include="platform\memx_platform.c" />
+    <ClCompile Include="mpuio\memx_mpuio_comm.c" />
+    <ClCompile Include="mpuio\memx_pcie.c" />
+    <ClCompile Include="mpuio\memx_pcie_xflow.c" />
+    <ClCompile Include="util\memx_log.c" />
+    <ClCompile Include="mpu\memx_cascadeplus.c" />
+    <ClCompile Include="udriver20\dfp.cpp" />
+    <ClCompile Include="udriver20\mx_api.cpp" />
+    <ClCompile Include="mpu\memx_device_manager.c" />
+    <ClCompile Include="dfp\mxpack.c" />
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="include\platform\windows\framework.h" />
+    <ClInclude Include="include\platform\windows\pch.h" />
+    <ClInclude Include="include\common\memx.h" />
+    <ClInclude Include="include\common\memx_command.h" />
+    <ClInclude Include="include\common\memx_common.h" />
+    <ClInclude Include="include\common\memx_dummy.h" />
+    <ClInclude Include="include\common\memx_platform.h" />
+    <ClInclude Include="include\common\memx_status.h" />
+    <ClInclude Include="include\dfp\memx_dfp.h" />
+    <ClInclude Include="include\gbf\memx_gbf.h" />
+    <ClInclude Include="include\mpuio\memx_ioctl.h" />
+    <ClInclude Include="include\mpuio\memx_mpuio.h" />
+    <ClInclude Include="include\mpuio\memx_usb.h" />
+    <ClInclude Include="include\mpu\memx_cascadeplus.h" />
+    <ClInclude Include="include\mpu\memx_mpu.h" />
+    <ClInclude Include="include\tool\memx_profile.h" />
+    <ClInclude Include="include\util\memx_list.h" />
+    <ClInclude Include="include\util\memx_ringbuffer.h" />
+    <ClInclude Include="include\mpu\memx_mpu_comm.h" />
+    <ClInclude Include="include\mpuio\memx_mpuio_comm.h" />
+    <ClInclude Include="include\mpuio\memx_pcie.h" />
+    <ClInclude Include="include\mpuio\memx_pcie_xflow.h" />
+    <ClInclude Include="resource.h" />
+    <ClInclude Include="include\common\memx_global_config.h" />
+    <ClInclude Include="include\common\memx_log.h" />
+    <ClInclude Include="udriver20\dfp.h" />
+    <ClInclude Include="udriver20\fifo_queue.h" />
+    <ClInclude Include="udriver20\mx_api.h" />
+    <ClInclude Include="include\mpu\memx_device_manager.h" />
+    <ClInclude Include="include\dfp\mxpack.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="udriver.rc" />
+  </ItemGroup>
+</Project>

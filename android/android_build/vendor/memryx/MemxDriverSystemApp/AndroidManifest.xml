@@ -1,0 +1,54 @@
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.memryx.systemapp"
+    android:versionCode="1"
+    android:versionName="1.0"
+    android:installLocation="internalOnly">
+
+    <permission
+        android:name="com.memryx.permission.ACCESS_MEMX_SERVICE"
+        android:protectionLevel="normal" />
+
+    <application
+        android:label="MemxDriverSystemApp"
+        android:allowBackup="false"
+        android:supportsRtl="true"
+        android:directBootAware="true"
+        android:hasCode="true">
+
+        <service
+            android:name=".MemxDriverPublicService"
+            android:exported="true">
+            <intent-filter>
+                <action android:name="com.memryx.action.MEMX_PUBLIC_SERVICE" />
+            </intent-filter>
+        </service>
+
+        <service
+            android:name=".MemxDriverCoreService"
+            android:exported="false"
+            android:permission="android.permission.BIND_SYSTEM_SERVICE">
+            <intent-filter>
+                <action android:name="com.memryx.action.MEMX_CORE_SERVICE" />
+            </intent-filter>
+        </service>
+
+        <receiver
+            android:name=".BootReceiver"
+            android:enabled="true"
+            android:exported="false"
+            android:permission="android.permission.RECEIVE_BOOT_COMPLETED">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </receiver>
+
+    </application>
+
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.SYSTEM_ALERT_WINDOW" />
+    <uses-permission android:name="android.permission.WRITE_SECURE_SETTINGS" />
+    <uses-permission android:name="android.permission.BIND_SYSTEM_SERVICE" />
+    <uses-permission android:name="android.permission.BIND_ACCESSIBILITY_SERVICE" />
+</manifest>

@@ -1,0 +1,32 @@
+1. memr
+sudo python3 ./memr.py -p /dev/ttyACM1 -a 20000100 -b 921600
+or 
+sudo python3 ./memr.py -p /dev/ttyACM1 -a 20000100 -b 230400
+
+
+For example:
+klinschen@memryx-E500-G9-WS760T:~/accton_1225$ sudo python3 ./memr.py -p /dev/ttyACM1 -a 20000100 -b 921600
+0x20000100 : 0x00000512
+
+The value 0x512 means:
+
+bits[8:7] = 0x2  ->> pcie boot
+2'b00 : QSPI
+2'b01 : USB
+2'b10 : PCIe
+2'b11 : UART
+
+bits[6:4] = 0x1  ->> mode2
+
+3'b000 : Mode 1 - 1st Chip - USB Host / Chained
+3'b001 : Mode 2 - 1st Chip - PCIe Host / Chained
+3'b010 : Mode 3 - Single Chip - PCIe Host
+3'b011 : Mode 4 - 1st Chip - USB & PCIe Host / Chained
+3'b100 : Mode 5 - Last Chip
+3'b101 : Mode 6 - Single Chip - USB Host
+3'b110 : Mode 7 - Leagcy USB
+3'b111 : Mode 8 -1st Chip - PCIe Host / Chained
+
+2. Update Flash:
+
+sudo python3 uart_WrLodaer.py -p /dev/ttyACM1 -b 230400 -f EyeSurf.bin -w uart_WrLodaer.raw

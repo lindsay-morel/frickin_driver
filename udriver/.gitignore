@@ -1,0 +1,6 @@
+build
+./debian
+./debian/**
+debian*
+debian**
+*.o

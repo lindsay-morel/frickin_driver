@@ -1,0 +1,10 @@
+cc_library_headers {
+    name: "memryx_headers",
+    vendor: true,
+}
+
+subdirs = [
+    "hal_service",
+    "jni_lib",
+	"MemxDriverSystemApp",
+]

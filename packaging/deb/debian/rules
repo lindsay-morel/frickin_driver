@@ -1,0 +1,31 @@
+#!/usr/bin/make -f
+
+DH_VERBOSE = 1
+
+include /usr/share/dpkg/pkg-info.mk
+include /usr/share/dpkg/architecture.mk
+
+%:
+	dh $@ --with dkms
+
+override_dh_install:
+	dh_install src/include/* usr/src/memx-drivers-$(DEB_VERSION_UPSTREAM)/include
+	dh_install src/pcie/* usr/src/memx-drivers-$(DEB_VERSION_UPSTREAM)/pcie
+	dh_install src/usb/* usr/src/memx-drivers-$(DEB_VERSION_UPSTREAM)/usb
+	dh_install src/include/memx_ioctl.h usr/src/memx-drivers-$(DEB_VERSION_UPSTREAM)/pcie/
+	dh_install udriver/debian/temp/lib/libmemx.so usr/lib/$(DEB_HOST_GNU_CPU)-linux-gnu/
+	dh_install udriver/debian/temp/include/memx/ usr/include/
+	dh_install fw/cascade.bin lib/firmware/
+	dh_install memx-sysfs.conf etc/modules-load.d/
+
+override_dh_dkms:
+	dh_dkms -V $(DEB_VERSION_UPSTREAM)
+
+override_dh_auto_configure:
+override_dh_auto_build:
+override_dh_auto_test:
+
+override_dh_auto_install:
+	./udriver_build.sh
+
+override_dh_auto_clean:

@@ -1,0 +1,6 @@
+# Label the HAL executable located in /vendor/bin/hw/
+/vendor/bin/hw/memxdriver_hal_service    u:object_r:memxdriver_hal_service_exec:s0
+
+# Label the kernel device node (adjust path if different)
+/dev/memx0                        u:object_r:memx_device:s0
+/dev/memx0_feature                u:object_r:memx_device:s0

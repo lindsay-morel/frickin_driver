@@ -1,0 +1,38 @@
+Step0:   Connect DUT and Reboot HostPlatform
+Step1:   Put new image to ./cascade.bin
+Step2:   $ source env.sh
+		 And then select (x86_64) or (aarch64) environment 
+Step3:   $ ./update_image.sh
+
+Option: tool to read firmware version
+         $ ./read_fwver
+               or
+         $ ./read_fwver -f filepath
+
+Option: tool to check chip-version
+         $ sudo ./check_version -h
+        To dump HELP menu
+
+TroubleShooting:
+1. If crc32 not found, please try:
+   $ sudo apt-get install libarchive-zip-perl
+2. If libpci.so not found, please try:
+   $ sudo apt-get install libpci-dev
+   
+   
+   
+   
+============================================================================================
+$ ./update_image.sh
+########## Memryx Flash UpdateTool (V1.0) ###############
+0000:02:00.0 vendor=1fe9 device=0100 class=1200 irq=0 (pin 1) base0=90000004 (Device 0100)
+BAR0: Base Address: 0x0000000090000000  Size=0x01000000
+BAR1: Base Address: 0x0000000000000000  Size=0x00000000
+BAR2: Base Address: 0x0000000091000000  Size=0x01000000
+BAR3: Base Address: 0x0000000000000000  Size=0x00000000
+BAR4: Base Address: 0x0000000092000000  Size=0x00100000
+BAR5: Base Address: 0x0000000000000000  Size=0x00000000
+Image size is: 0x1a2ac
+FLASH IMAGE upgrade OK
+##########################################################
+

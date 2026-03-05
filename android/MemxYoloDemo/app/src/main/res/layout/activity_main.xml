@@ -1,0 +1,215 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/main"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:padding="16dp">
+
+    <!-- Vertical guideline at 25% width to split into 25% left, 75% right -->
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline_vertical"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.25" />
+
+    <!-- DFP Path label, aligned to left edge -->
+    <TextView
+        android:id="@+id/textView_dirPathLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="DFP Path:"
+        android:textSize="18sp"
+        android:layout_marginTop="0dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        />
+
+    <!-- DFP Path input spanning full left column -->
+    <EditText
+        android:id="@+id/editText_dirPath"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Enter DFP Directory Path"
+        android:textSize="18sp"
+        android:inputType="textUri"
+        app:layout_constraintStart_toEndOf="@id/textView_dirPathLabel"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintBaseline_toBaselineOf="@id/textView_dirPathLabel"
+        android:layout_marginStart="8dp"
+        />
+
+    <!-- Frames label, left-aligned -->
+    <TextView
+        android:id="@+id/textView_framesLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="Frames:"
+        android:textSize="18sp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textView_dirPathLabel"
+        />
+
+    <!-- Frames input spanning full left column -->
+    <EditText
+        android:id="@+id/editText_frames"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:hint="Count"
+        android:textSize="18sp"
+        android:inputType="number"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toEndOf="@id/textView_framesLabel"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/textView_dirPathLabel"
+        />
+
+    <!-- Row of Run/Stop buttons spanning full left column -->
+    <LinearLayout
+        android:id="@+id/layout_buttons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/textView_framesLabel">
+
+        <Button
+            android:id="@+id/button_start_benchmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Run Benchmark"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/button_stop_benchmark"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop"
+            android:enabled="false" />
+
+    </LinearLayout>
+
+    <!-- Horizontal divider before detection section -->
+    <View
+        android:id="@+id/divider_detection"
+        android:layout_width="0dp"
+        android:layout_height="1dp"
+        android:background="@android:color/darker_gray"
+        android:layout_marginTop="24dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/layout_buttons" />
+
+    <!-- Detection buttons section -->
+    <LinearLayout
+        android:id="@+id/layout_detect_buttons"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/divider_detection">
+
+        <Button
+            android:id="@+id/button_load_dfp"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Load DFP" />
+
+        <Button
+            android:id="@+id/button_start_detect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Start Detect"
+            android:layout_marginStart="8dp"
+            android:layout_marginEnd="8dp" />
+
+        <Button
+            android:id="@+id/button_stop_detect"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="1"
+            android:text="Stop Detect" />
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/layout_results"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/layout_detect_buttons">
+
+        <TextView
+            android:id="@+id/fps_textview"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="FPS: --"
+            android:textSize="36sp"
+            android:padding="8dp"/>
+
+        <ScrollView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <TableLayout
+                android:id="@+id/results_table"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textSize="14sp"
+                android:stretchColumns="*"/>
+        </ScrollView>
+
+    </LinearLayout>
+
+    <!-- Results list filling left column below buttons -->
+    <ListView
+        android:id="@+id/listView_results"
+        android:layout_width="0dp"
+        android:layout_height="0dp"
+        android:divider="@android:color/darker_gray"
+        android:dividerHeight="1dp"
+        android:layout_marginTop="16dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toStartOf="@id/guideline_vertical"
+        app:layout_constraintTop_toBottomOf="@id/layout_results"
+        app:layout_constraintBottom_toBottomOf="parent"
+        />
+
+    <!-- Container for camera preview + overlay, filling right 75% -->
+    <FrameLayout
+        android:id="@+id/camera_frame"
+        android:layout_width="0dp"
+        android:layout_height="match_parent"
+        app:layout_constraintStart_toEndOf="@id/guideline_vertical"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintBottom_toBottomOf="parent">
+
+        <!-- CameraX PreviewView covering full container -->
+        <androidx.camera.view.PreviewView
+            android:id="@+id/previewView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+        <!-- Custom overlay for drawing detection boxes -->
+        <com.memryx.memxdriver.OverlayView
+            android:id="@+id/overlayView"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent" />
+
+    </FrameLayout>
+
+</androidx.constraintlayout.widget.ConstraintLayout>

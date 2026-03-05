@@ -1,0 +1,2 @@
+# memryx chip permissions
+KERNEL=="memxchip*", MODE="0777", OPTIONS="last_rule"

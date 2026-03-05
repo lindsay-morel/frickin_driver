@@ -1,0 +1,14 @@
+type memxdriver_hal_service, domain;
+type memxdriver_hal_service_exec, exec_type, file_type, vendor_file_type;
+type memx_device, dev_type;
+type memxdriver_aidl_hal_service, service_manager_type, hal_service_type;
+
+hal_attribute(memxdriver_hal_service);
+init_daemon_domain(memxdriver_hal_service)
+add_service(memxdriver_hal_service, memxdriver_aidl_hal_service)
+binder_use(memxdriver_hal_service)
+binder_call({ platform_app priv_app }, memxdriver_hal_service)
+
+allow { platform_app priv_app } memxdriver_aidl_hal_service:service_manager find;
+allow memxdriver_hal_service hwbinder_device:chr_file rw_file_perms;
+allow memxdriver_hal_service memx_device:chr_file rw_file_perms;

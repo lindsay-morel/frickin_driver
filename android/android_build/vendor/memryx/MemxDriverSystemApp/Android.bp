@@ -1,0 +1,28 @@
+android_app {
+    name: "MemxDriverSystemApp",
+    srcs: [
+        "src/**/*.java",
+    ],
+    privileged: true,
+    certificate: "platform",
+    manifest: "AndroidManifest.xml",
+    sdk_version: "system_current",
+    vendor: true,
+
+    jni_libs: [
+        "memxdriver_jni"
+    ],
+    static_libs: [
+        "com.memryx.memxdriver.IMemxDriverService-V1-java",
+    ],
+    aidl: {
+        include_dirs: [
+            "vendor/memryx/aidl_interface",
+        ],
+    },
+    dex_preopt: {
+        enabled: true,
+    },
+    use_embedded_native_libs: true
+
+}

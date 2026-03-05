@@ -1,0 +1,101 @@
+;
+; Copyright (c) 2023 MemryX. Inc.
+;
+
+[Version]
+Signature   = "$WINDOWS NT$"                                ; Must be $Windows NT$
+Class       = %ClassName%                                   ; The name of the device setup class for the type of device
+ClassGuid   = {2A0E6675-35F9-4826-A9D4-DF1FBA1DDA0F}        ; Specifies the device setup class GUID.
+Provider    = %ProviderString%                              ; Identifies the provider of the INF file.
+CatalogFile = KmdfMemxPci.cat                               ; Catalog files are not listed in the SourceDisksFiles section or CopyFiles directive of the INF.
+DriverVer   = 03/01/2024,1.0.0.0                            ; This entry specifies version information for drivers that are installed by this INF file.
+PnpLockdown = 1                                             ; PnP prevents applications from directly modifying the files that are copied by INF CopyFiles directives.
+
+[SourceDisksNames]
+1 = %DISK_NAME%,                                            ; Identifies the disks that contain the source files to be transferred to the target computer during installation.
+                                                            ; Describes the purpose of the disk identified by diskid. Value 1 specifies the second disk
+
+[SourceDisksFiles]
+mxapcik.sys = 1                                             ; Identifies the disks that contain those source files You cannot use a %strkey% token to specify the file name.
+                                                            ; A SourceDisksFiles section can have any number of entries, one for each file on the distribution disks.
+
+[DestinationDirs]
+DefaultDestDir = 13                                         ; 'Run from Driver Store'. Specifies the default destination directory for all copy, delete operations on files
+
+;-------------- Install Section
+[ClassInstall32]                                            ; Include a ClassInstall32 section in a device INF file only to install a new custom device setup class.
+Addreg=SetupClass.AddReg                                    ; References one or more named sections that contain class-specific value entries to be written into the registry.
+
+[SetupClass.AddReg]
+HKR,,,%REG_SZ% ,%ClassName%                                 ; Relative to Root, A null-terminated string
+HKR,,Icon,,"-28"                                            ; Icon value is negative, the absolute value is the resource identifier of the icon in SetupApi.DLL.
+
+[Manufacturer]
+%ManufacturerString% = MEMX, NT$ARCH$.10.0...16299          ; This driver package applies to OS version 10.0.16299 and later only
+
+; Model Section
+[MEMX.NT$ARCH$.10.0...16299]
+; DeviceDescription     InstallSectionName           DeviceHwId
+%Memryx.DevDesc% =      Memryx.Dev,                  PCI\VEN_1FE9&DEV_0100
+
+; Install Section
+[Memryx.Dev.NT]
+CopyFiles=Driver_copyfiles
+
+[Driver_copyfiles]
+mxapcik.sys
+
+[Memryx.Dev.NT.HW]
+AddReg = Memryx.Dev.NT.EnableMSI
+
+[Memryx.Dev.NT.EnableMSI]
+; Registry values related to MSI support
+HKR,"Interrupt Management",,0x00000010
+HKR,"Interrupt Management\MessageSignaledInterruptProperties",,0x00000010
+HKR, Interrupt Management\Affinity Policy, 0x00000010
+
+; The MSISupported entry determines whether the device supports MSIs. Set it to 1 to enable MSI support.
+HKR,"Interrupt Management\MessageSignaledInterruptProperties",MSISupported,%REG_DWORD%,1
+
+; The MessageNumberLimit entry specifies the maximum number of MSIs to allocate.
+; For PCI 3.0, MessageNumberLimit can be any number up to 2,048.
+HKR,"Interrupt Management\MessageSignaledInterruptProperties",MessageNumberLimit,%REG_DWORD%, 33
+
+; Specifies that the device's interrupts are of high priority. This setting is appropriate for devices that require low latency. IrqPriorityHigh (3)
+HKR, Interrupt Management\Affinity Policy, DevicePriority, %REG_DWORD%, 3
+
+;-------------- Service installation
+[Memryx.Dev.NT.Services]
+;               ServiceName     flags                           Service-Install-Section
+AddService  =   mxapcik,        %SPSVCINST_ASSOCSERVICE%,       MemryX_Service          ; To indicate that a service is the function driver for a device, the service should specify the SPSVCINST_ASSOCSERVICE flag
+
+
+;-------------- Service install sections
+[MemryX_Service]
+DisplayName    = %MemryX.SerDesc%               ; Specifies a friendly name for the service/driver
+ServiceType    = %SERVICE_KERNEL_DRIVER%        ; The type-code for a kernel-mode device driver must be set to SERVICE_KERNEL_DRIVER
+StartType      = %SERVICE_DEMAND_START%         ; Specifies when to start the driver SERVICE_DEMAND_START now could changed to SERVICE_SYSTEM_START
+ErrorControl   = %SERVICE_ERROR_NORMAL%         ; Specifies the level of error control
+ServiceBinary  = %13%\mxapcik.sys               ; Specifies the path of the binary for the service, expressed as %dirid%\filename.
+
+--------------  Memryx.Dev Coinstaller
+[Memryx.Dev.NT.Wdf]
+KmdfService = mxapcik, MemryX_wdfsect
+
+[MemryX_wdfsect]
+KmdfLibraryVersion = $KMDFVERSION$
+
+[Strings]
+ProviderString          = "Memryx.INC"
+ManufacturerString      = "Memryx.INC"
+ClassName               = "AI Accelerator"
+MemryX.SerDesc          = "MemryX AI Accelerator"
+Memryx.DevDesc          = "MemryX AI Accelerator"
+DISK_NAME               = "MemryX MXA AI Acclerator Driver"
+REG_DWORD               = 0x00010001
+REG_SZ                  = 0x00000000
+SPSVCINST_ASSOCSERVICE  = 0x00000002
+SERVICE_KERNEL_DRIVER   = 0x00000001
+SERVICE_SYSTEM_START    = 0x1
+SERVICE_DEMAND_START    = 0x3
+SERVICE_ERROR_NORMAL    = 0x1

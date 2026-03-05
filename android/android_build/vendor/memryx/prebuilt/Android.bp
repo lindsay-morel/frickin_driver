@@ -1,0 +1,20 @@
+cc_prebuilt_library_shared {
+    name: "libmemx_android",
+    vendor: true,
+    // compile_multilib: "both",
+
+    export_include_dirs: ["android-34/include"],
+    arch: {
+        arm64: {
+            srcs: ["android-34/arm64-v8a/libmemx_android.so"],
+        },
+        arm: { // for 32-bit arm
+            srcs: ["android-34/armeabi-v7a/libmemx_android.so"],
+        },
+    },
+
+    shared_libs: [
+        "liblog"
+    ],
+
+}

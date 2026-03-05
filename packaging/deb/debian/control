@@ -1,0 +1,8 @@
+Source: memx-drivers
+Maintainer: MemryX <no-reply@memryx.com>
+Build-Depends: debhelper (>= 9), dkms, libusb-1.0-0-dev, udev
+
+Package: memx-drivers
+Architecture: amd64 arm64
+Depends: libusb-1.0-0, dkms, udev, ${shlibs:Depends}, ${misc:Depends}
+Description: MemryX Runtime Library and Kernel Drivers for production MX3 (PCIe) and pre-production EVB1 (USB)

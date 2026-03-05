@@ -1,0 +1,4 @@
+service memxdriver_hal_service /vendor/bin/hw/memxdriver_hal_service
+    class hal
+    user system
+    group system

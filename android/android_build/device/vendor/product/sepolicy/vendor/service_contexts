@@ -1,0 +1,3 @@
+# Map the VINTF service name to its SELinux type
+# Ensure FQName matches your AIDL interface package and name
+com.memryx.memxdriver.IMemxDriverService/default    u:object_r:memxdriver_aidl_hal_service:s0

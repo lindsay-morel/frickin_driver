@@ -1,0 +1,32 @@
+package {
+    default_applicable_licenses: ["Android-Apache-2.0"],
+}
+
+cc_binary {
+    name: "memxdriver_hal_service",
+    vendor: true,
+    relative_install_path: "hw",
+
+    srcs: [
+        "MemxDriverService.cpp",
+    ],
+
+    cpp_std: "c++17",
+    cflags: [
+        "-Wall",
+        "-Werror",
+    ],
+
+    shared_libs: [
+        "libmemx_android",
+        "liblog",
+        "libutils",
+        "libbase",
+        "libc++",
+        "libbinder_ndk",
+        "com.memryx.memxdriver.IMemxDriverService-V1-ndk",
+    ],
+
+    init_rc: ["memxdriver_hal_service.rc"],
+    vintf_fragments: ["memxdriver_hal_service.xml"],
+}
