@@ -1,18 +1,9 @@
-# MemryX MX3 PCIe kernel module Makefile (Yocto-friendly)
-
-CONFIG_MODULE_SIG ?= n
-
-# Yocto/module.bbclass will pass KERNEL_SRC (and usually KERNEL_PATH)
-# Keep a fallback for non-Yocto manual builds.
-KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
-KERNEL_PATH ?= $(KERNEL_SRC)
-
-PWD := $(shell pwd)
-
+CONFIG_MODULE_SIG=n
 INCLUDES += -I$(PWD)/../../include
-EXTRA_CFLAGS += $(INCLUDES)
 
 obj-m := memx_cascade_plus_pcie.o
+
+# Objects that make up the module
 memx_cascade_plus_pcie-objs := \
 	memx_feature.o \
 	memx_xflow.o \
@@ -25,15 +16,14 @@ memx_cascade_plus_pcie-objs := \
 	memx_fs_sys.o \
 	memx_fs.o \
 	memx_fw_log.o \
-	memx_fs_hwmon.o
+	memx_fs_hwmon.o \
+	memx_fs_device.o \
+	memx_dma.o
 
-.PHONY: all modules clean
-
-all: modules
-
-modules:
-	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(EXTRA_CFLAGS)" modules
+# Standard out-of-tree build (Yocto passes KERNEL_SRC/KERNEL_PATH; Kbuild uses M=)
+all:
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(INCLUDES)" modules
 
 clean:
 	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
-	rm -f app *.out
+	rm -f *.out app
