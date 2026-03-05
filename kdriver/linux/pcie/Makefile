@@ -1,13 +1,11 @@
-# MemryX MX3 PCIe kernel module (Yocto-friendly Makefile)
+# MemryX MX3 PCIe kernel module Makefile (Yocto-friendly)
 
-CONFIG_MODULE_SIG := n
+# When building under Yocto, KERNEL_SRC is passed in from the recipe.
+# For local/manual builds, fall back to the running kernel headers.
+KERNEL_SRC ?= /lib/modules/$(shell uname -r)/build
 
-# Add include path for driver headers
-INCLUDES += -I$(PWD)/../../include
-
+# Kbuild variables
 obj-m := memx_cascade_plus_pcie.o
-
-# Objects that make up the module
 memx_cascade_plus_pcie-objs := \
 	memx_feature.o \
 	memx_xflow.o \
@@ -24,15 +22,17 @@ memx_cascade_plus_pcie-objs := \
 	memx_fs_device.o \
 	memx_dma.o
 
-# Yocto/BitBake provides KERNEL_SRC (your recipe sets it). Fall back to KERNEL_PATH if needed.
-KERNEL_SRC ?= $(KERNEL_PATH)
+# Default target (Yocto/module.bbclass will call "make modules")
+all: modules
 
-all:
-	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(INCLUDES)" modules
-
+# Build the module
 modules:
-	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(INCLUDES)" modules
+	$(MAKE) -C $(KERNEL_SRC) M=$(CURDIR) modules
 
+# Install the module into the staging root (Yocto/module.bbclass calls this)
+modules_install:
+	$(MAKE) -C $(KERNEL_SRC) M=$(CURDIR) modules_install
+
+# Clean build artifacts
 clean:
-	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) clean
-	rm -f *.out app
+	$(MAKE) -C $(KERNEL_SRC) M=$(CURDIR) clean
