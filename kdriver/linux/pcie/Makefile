@@ -1,4 +1,8 @@
-CONFIG_MODULE_SIG=n
+# MemryX MX3 PCIe kernel module (Yocto-friendly Makefile)
+
+CONFIG_MODULE_SIG := n
+
+# Add include path for driver headers
 INCLUDES += -I$(PWD)/../../include
 
 obj-m := memx_cascade_plus_pcie.o
@@ -20,8 +24,13 @@ memx_cascade_plus_pcie-objs := \
 	memx_fs_device.o \
 	memx_dma.o
 
-# Standard out-of-tree build (Yocto passes KERNEL_SRC/KERNEL_PATH; Kbuild uses M=)
+# Yocto/BitBake provides KERNEL_SRC (your recipe sets it). Fall back to KERNEL_PATH if needed.
+KERNEL_SRC ?= $(KERNEL_PATH)
+
 all:
+	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(INCLUDES)" modules
+
+modules:
 	$(MAKE) -C $(KERNEL_SRC) M=$(PWD) EXTRA_CFLAGS="$(INCLUDES)" modules
 
 clean:
