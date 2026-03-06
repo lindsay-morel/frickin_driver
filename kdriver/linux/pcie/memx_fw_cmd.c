@@ -14,41 +14,81 @@ static int memx_wait_for_firmware_msix_ack(struct memx_pcie_dev *memx_dev)
 		pr_err("memryx: wait_for_fw_ack: failed with -ENODEV\n");
 		return -ENODEV;
 	}
-	// check until received cmd process done msix
+
+	/*
+	 * Legacy IRQ fallback:
+	 * On some platforms MSI-X/MSI is unavailable or the legacy IRQ path
+	 * does not wake fw_ctrl.wq reliably. In that case, poll the legacy
+	 * event mailbox directly and synthesize the firmware-ack completion.
+	 */
+	if (memx_dev->use_legacy_irq) {
+		do {
+			u32 event = memx_sram_read(memx_dev, MEMRYX_LEGACY_MSG_ADDR);
+			u32 msix_idx = event >> 8;
+
+			if (memx_dev->mpu_data.fw_ctrl.is_abort) {
+				memx_dev->mpu_data.fw_ctrl.is_abort = 0;
+				return -ERESTARTSYS;
+			}
+
+			/*
+			 * In legacy mode, firmware ACK is encoded as event>>8 == 0
+			 * (same interpretation used by the legacy IRQ handler).
+			 */
+			if ((event != MEMRYX_LEGACY_CLEAR_MSG) && (msix_idx == 0)) {
+				pr_info("memryx: legacy fw ack event=0x%08X\n", event);
+
+				spin_lock(&memx_dev->mpu_data.fw_ctrl.lock);
+				memx_dev->mpu_data.fw_ctrl.indicator = 0;
+				spin_unlock(&memx_dev->mpu_data.fw_ctrl.lock);
+
+				/* Clear mailbox so firmware can send the next event */
+				memx_sram_write(memx_dev, MEMRYX_LEGACY_MSG_ADDR, MEMRYX_LEGACY_CLEAR_MSG);
+				return 0;
+			}
+
+			msleep(100);
+			fail_count++;
+			pr_err("memryx: wait_for_fw_ack(legacy): wait timeout 100ms, retrying again\n");
+		} while (fail_count < (FAIL_ACK_COUNT * 10));
+
+		pr_err("memryx: wait_for_fw_ack(legacy): failed!\n");
+		return -ENODEV;
+	}
+
+	/* Original MSI/MSI-X wait path */
 	do {
-		wq_status = wait_event_interruptible_timeout(memx_dev->mpu_data.fw_ctrl.wq, memx_dev->mpu_data.fw_ctrl.indicator != -1, msecs_to_jiffies(1000));
+		wq_status = wait_event_interruptible_timeout(
+			memx_dev->mpu_data.fw_ctrl.wq,
+			memx_dev->mpu_data.fw_ctrl.indicator != -1,
+			msecs_to_jiffies(1000));
+
 		if (memx_dev->mpu_data.fw_ctrl.is_abort) {
 			wq_status = -ERESTARTSYS;
 			memx_dev->mpu_data.fw_ctrl.is_abort = 0;
 			return wq_status;
 		}
+
 		if (wq_status == -ERESTARTSYS) {
 			pr_err("memryx: wait_for_fw_ack: cancelled by interrupt\n");
 			return wq_status;
 		}
+
 		if (wq_status < 1) {
 			fail_count++;
 			pr_err("memryx: wait_for_fw_ack: wait timeout 1(s), retrying again\n");
 		}
-
 	} while ((wq_status < 1) && (fail_count < FAIL_ACK_COUNT));
 
 	if (wq_status >= 1) {
-#ifdef DEBUG
-		pr_info("memryx: wait_for_fw_ack: received ack notification from msix isr(%d)\n", memx_dev->mpu_data.fw_ctrl.indicator);
-#endif
 		spin_lock(&memx_dev->mpu_data.fw_ctrl.lock);
 		memx_dev->mpu_data.fw_ctrl.indicator = -1;
 		spin_unlock(&memx_dev->mpu_data.fw_ctrl.lock);
-#ifdef DEBUG
-		pr_info("memryx: wait_for_fw_ack:: success.\n");
-#endif
 		return 0;
-
-	} else {
-		pr_err("memryx: wait_for_fw_ack: failed!\n");
-		return -ENODEV;
 	}
+
+	pr_err("memryx: wait_for_fw_ack: failed!\n");
+	return -ENODEV;
 }
 
 static s32 memx_send_command_to_firmware(struct memx_pcie_dev *memx_dev, enum PCIE_FW_CMD_ID op_code, u16 expected_payload_length, u8 chip_id)
