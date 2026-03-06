@@ -44,9 +44,7 @@ static irqreturn_t memx_single_isr_handler(s32 irq, void *data)
 			/* Make fw can send next event */
 			memx_sram_write(memx_dev, MEMRYX_LEGACY_MSG_ADDR, MEMRYX_LEGACY_CLEAR_MSG);
 
-#ifdef DEBUG
 			pr_info("memryx: %s: pci_dev(%0x:%0x), irq(%d), event(0x%X).\n", __func__, memx_dev->pDev->vendor, memx_dev->pDev->device, irq, event);
-#endif
 			msix_idx = event >> 8;
 			chip_idx = (msix_idx - 1) >> 1;
 
