@@ -119,6 +119,7 @@ struct memx_pcie_dev {
 	struct pci_dev *pDev;
 	struct semaphore mutex;
 	u32 reference_count;
+	u8 use_legacy_irq;
 
 	struct memx_runtime_cfg rt_cfg;
 
