@@ -1,4 +1,5 @@
 // SPDX-License-Identifier: GPL-2.0+
+#include <linux/delay.h>
 #include "memx_xflow.h"
 #include "memx_pcie.h"
 #include "memx_fw_cmd.h"
